@@ -1,0 +1,6 @@
+{
+  "type": "postgres",
+  "url": "postgres://wannago:wannago@postgres:5432/wannago",
+  "entities": ["src/**/*.entity.ts"],
+  "synchronize": true 
+}
