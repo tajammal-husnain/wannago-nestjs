@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { AuthenticationService } from './authentication.service';
 import { CreateUserDto } from 'src/users/dto/createUser.dto';
-import { LocalAuthenticationGuard } from './guards/localAuthentication.guard';
+import LocalAuthenticationGuard from './guards/localAuthentication.guard';
 import RequestWithUser from './constants/requestWithUser.interface';
 import { Response } from 'express';
 
@@ -30,7 +30,6 @@ export class AuthenticationController {
     const cookie = this.authenticationService.getCookiesWithJwtToken(user?.id);
     response.setHeader('Set-Cookie', cookie);
     user.password = undefined;
-    // console.log('🚀 ~ AuthenticationController ~ login ~ user:', user);
     response.json(user);
   }
 }

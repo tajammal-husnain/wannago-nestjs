@@ -15,6 +15,7 @@ import { UpdatePostDto } from './dto/updatePost.dto';
 import JwtAuthenticationGuard from 'src/authentication/guards/jwt-authentication.guard';
 
 @Controller('posts')
+@UseGuards(JwtAuthenticationGuard)
 export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
@@ -31,7 +32,6 @@ export class PostsController {
   }
 
   @Post('add')
-  @UseGuards(JwtAuthenticationGuard)
   async createPost(@Body() postObj: CreatePostDto) {
     console.log('🚀 ~ PostsController ~ createPost ~ postObj:', postObj);
     return await this.postsService.createPost(postObj);
