@@ -7,29 +7,34 @@ import {
   ParseIntPipe,
   Query,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/createPost.dto';
 import { UpdatePostDto } from './dto/updatePost.dto';
+import JwtAuthenticationGuard from 'src/authentication/guards/jwt-authentication.guard';
 
 @Controller('posts')
 export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
   @Get('')
-  getAllPosts() {
-    return this.postsService.getAllPosts();
+  async getAllPosts() {
+    const res = await this.postsService.getAllPosts();
+    console.log('🚀 ~ PostsController ~ getAllPosts ~ res:', res);
+    return res;
   }
 
   @Get(':id')
-  getPostById(@Param('id') id: number) {
-    return this.postsService.getPostById(id);
+  async getPostById(@Param('id', ParseIntPipe) id: number) {
+    return await this.postsService.getPostById(id);
   }
 
   @Post('add')
-  createPost(@Body() postObj: CreatePostDto) {
+  @UseGuards(JwtAuthenticationGuard)
+  async createPost(@Body() postObj: CreatePostDto) {
     console.log('🚀 ~ PostsController ~ createPost ~ postObj:', postObj);
-    return this.postsService.createPost(postObj);
+    return await this.postsService.createPost(postObj);
   }
 
   @Post('update')
@@ -37,12 +42,11 @@ export class PostsController {
     @Body() updatedPostObj: UpdatePostDto,
     @Query('id', ParseIntPipe) id: number,
   ) {
-    const response = await this.postsService.updatePost(id, updatedPostObj);
-    return response;
+    return await this.postsService.updatePost(id, updatedPostObj);
   }
 
   @Delete('delete')
-  deletePost(@Query('id', ParseIntPipe) id: number) {
-    return this.postsService.deletePost(id);
+  async deletePost(@Query('id', ParseIntPipe) id: number) {
+    return await this.postsService.deletePost(id);
   }
 }
