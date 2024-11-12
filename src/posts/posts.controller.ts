@@ -1,48 +1,49 @@
 import {
-  Get,
-  Controller,
-  Param,
-  Post,
   Body,
-  ParseIntPipe,
-  Query,
+  Controller,
   Delete,
-  UseGuards,
+  Get,
+  Param,
   Patch,
+  Post,
+  UseGuards,
 } from '@nestjs/common';
-import { PostsService } from './posts.service';
-import { CreatePostDto } from './dto/createPost.dto';
-import { UpdatePostDto } from './dto/updatePost.dto';
+import PostsService from './posts.service';
+import CreatePostDto from './dto/createPost.dto';
+import UpdatePostDto from './dto/updatePost.dto';
+import JwtAuthenticationGuard from 'src/authentication/guards/jwt-authentication.guard';
+import FindOneParams from 'src/utils/findOneParams';
+
 @Controller('posts')
-export class PostsController {
+export default class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
-  @Get()
-  async allPosts() {
-    return await this.postsService.getAllPosts();
+  @Get('list')
+  getAllPosts() {
+    return this.postsService.getAllPosts();
   }
 
   @Get(':id')
-  async postById(@Param('id', ParseIntPipe) id: number) {
-    return await this.postsService.getPostById(id);
+  getPostById(@Param() { id }: FindOneParams) {
+    return this.postsService.getPostById(Number(id));
   }
 
-  @Post('add')
-  async addPost(@Body() postObj: CreatePostDto) {
-    console.log('🚀 ~ PostsController ~ createPost ~ postObj:', postObj);
-    return await this.postsService.createPost(postObj);
+  @Post()
+  @UseGuards(JwtAuthenticationGuard)
+  async createPost(@Body() post: CreatePostDto) {
+    return this.postsService.createPost(post);
   }
 
-  @Patch('update')
-  async changePost(
-    @Body() updatedPostObj: UpdatePostDto,
-    @Query('id', ParseIntPipe) id: number,
+  @Patch(':id')
+  async updatePost(
+    @Param() { id }: FindOneParams,
+    @Body() post: UpdatePostDto,
   ) {
-    return await this.postsService.updatePost(id, updatedPostObj);
+    return this.postsService.updatePost(Number(id), post);
   }
 
-  @Delete('delete')
-  async removePost(@Query('id', ParseIntPipe) id: number) {
-    return await this.postsService.deletePost(+id);
+  @Delete(':id')
+  async deletePost(@Param() { id }: FindOneParams) {
+    return this.postsService.deletePost(Number(id));
   }
 }

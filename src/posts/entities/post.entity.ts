@@ -1,22 +1,24 @@
-import { Exclude, Expose, Transform } from 'class-transformer';
-import { Column, Entity, IsNull, PrimaryGeneratedColumn } from 'typeorm';
+import { Transform } from 'class-transformer';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({ name: 'post' })
-class PostEntity {
+class Post {
   @PrimaryGeneratedColumn()
-  public id: number;
+  public id?: number;
 
   @Column()
-  @Expose()
   public title: string;
 
+  @Column()
+  public content: string;
+
   @Column({ nullable: true })
-  @Expose()
   @Transform((value) => {
     if (value !== null) {
       return value;
     }
   })
-  public content: string;
+  public category?: string;
 }
-export default PostEntity;
+
+export default Post;
