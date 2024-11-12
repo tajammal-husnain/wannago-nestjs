@@ -1,16 +1,15 @@
-const recursivelyStripNullValue = (value: any) => {
+const recursivelyStripNullValues = (value: any): any => {
   if (Array.isArray(value)) {
-    return value.map(recursivelyStripNullValue(value));
+    return value.map((item) => recursivelyStripNullValues(item));
   }
-  if (value && value !== null && typeof value === 'object') {
+  if (value && typeof value === 'object') {
     return Object.fromEntries(
-      Object.entries(value).map(([key, value]) => [
-        key,
-        recursivelyStripNullValue(value),
-      ]),
+      Object.entries(value)
+        .filter(([, v]) => v !== null) // filter out null values
+        .map(([key, v]) => [key, recursivelyStripNullValues(v)]),
     );
   }
-  if (value !== null) {
-    return value;
-  }
+  return value;
 };
+
+export default recursivelyStripNullValues;

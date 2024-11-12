@@ -13,8 +13,10 @@ export default class PostsService {
     private postsRepository: Repository<Post>,
   ) {}
 
-  getAllPosts() {
-    return this.postsRepository.find();
+  async getAllPosts() {
+    const res = await this.postsRepository.find();
+    console.log('🚀 ~ PostsService ~ getAllPosts ~ getAllPosts:', res);
+    return res;
   }
 
   async getPostById(id: number) {
@@ -45,5 +47,9 @@ export default class PostsService {
     if (!deleteResponse.affected) {
       throw new PostNotFoundException(id);
     }
+    return {
+      message: `Post with id ${id} deleted successfully`,
+      data: {},
+    };
   }
 }
