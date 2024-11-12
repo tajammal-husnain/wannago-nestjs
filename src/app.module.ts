@@ -3,11 +3,10 @@ import { Module } from '@nestjs/common';
 import { PostsModule } from './posts/posts.module';
 import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from './database/database.module';
-import { UsersService } from './users/users.service';
 import { UsersModule } from './users/users.module';
-import { AuthenticationService } from './authentication/authentication.service';
-import { AuthenticationController } from './authentication/authentication.controller';
 import { AuthenticationModule } from './authentication/authentication.module';
+import { APP_FILTER } from '@nestjs/core';
+import ExceptionsLoggerFilter from './utils/exceptionsLogger.filter';
 
 @Module({
   imports: [
@@ -29,6 +28,11 @@ import { AuthenticationModule } from './authentication/authentication.module';
     AuthenticationModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_FILTER,
+      useClass: ExceptionsLoggerFilter,
+    },
+  ],
 })
 export class AppModule {}

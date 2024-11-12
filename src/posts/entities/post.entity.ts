@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Exclude, Expose, Transform } from 'class-transformer';
+import { Column, Entity, IsNull, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({ name: 'post' })
 class PostEntity {
@@ -6,9 +7,16 @@ class PostEntity {
   public id: number;
 
   @Column()
-  title: string;
+  @Expose()
+  public title: string;
 
-  @Column()
-  content: string;
+  @Column({ nullable: true })
+  @Expose()
+  @Transform((value) => {
+    if (value !== null) {
+      return value;
+    }
+  })
+  public content: string;
 }
 export default PostEntity;

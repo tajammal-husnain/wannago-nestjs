@@ -1,9 +1,10 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { CreateUserDto } from 'src/users/dto/createUser.dto';
 import * as bcrypt from 'bcrypt';
 import { UsersService } from 'src/users/users.service';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { PostgresErrorCode } from 'src/database/postgresErrorCodes.enum';
+import { RegisterUserDto } from 'src/users/dto/register.dto';
 
 @Injectable()
 export class AuthenticationService {
@@ -13,7 +14,7 @@ export class AuthenticationService {
     private readonly configService: ConfigService,
   ) {}
 
-  public async registerUser(createUserData: CreateUserDto) {
+  public async registerUser(createUserData: RegisterUserDto) {
     const hashedPassword = await bcrypt.hash(createUserData.password, 10);
     try {
       const userToCreate = {
@@ -21,7 +22,7 @@ export class AuthenticationService {
         password: hashedPassword,
       };
       let createdUser = await this.userService.createUser(userToCreate);
-      createdUser = { ...createdUser, password: undefined };
+      return { ...createdUser, password: undefined };
     } catch (error) {
       if (error?.code === PostgresErrorCode.UniqueViolation) {
         throw new HttpException(
@@ -70,5 +71,9 @@ export class AuthenticationService {
     const payload: TokenPayload = { userId };
     const token = this.jwtService.sign(payload);
     return `Authentication=${token};HttpOnly; Path=/; Max-Age=${this.configService.get('JWT_EXPIRATION_TIME')}`;
+  }
+
+  public getCookiesForLogout() {
+    return `Authentication=;HttpOnly; Path=/; Max-Age=0`;
   }
 }
