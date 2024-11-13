@@ -19,8 +19,10 @@ export default class PostsService {
     return res;
   }
 
-  async getPostById(id: number) {
-    const post = await this.postsRepository.findOneBy({ id: id });
+  async getPostById(id: string) {
+    const post = await this.postsRepository.findOne({
+      where: { id: id },
+    });
     if (post) {
       return post;
     }
@@ -33,16 +35,18 @@ export default class PostsService {
     return newPost;
   }
 
-  async updatePost(id: number, post: UpdatePostDto) {
+  async updatePost(id: string, post: UpdatePostDto) {
     await this.postsRepository.update(id, post);
-    const updatedPost = await this.postsRepository.findOneBy({ id: id });
+    const updatedPost = await this.postsRepository.findOne({
+      where: { id: id },
+    });
     if (updatedPost) {
       return updatedPost;
     }
     throw new PostNotFoundException(id);
   }
 
-  async deletePost(id: number) {
+  async deletePost(id: string) {
     const deleteResponse = await this.postsRepository.delete(id);
     if (!deleteResponse.affected) {
       throw new PostNotFoundException(id);

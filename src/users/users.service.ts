@@ -23,9 +23,11 @@ export class UsersService {
     }
     throw new NotFoundException({ message: 'Users not found' });
   }
-  async getUserById(id: number) {
+  async getUserById(id: string) {
     try {
-      const user = await this.userRepository.findOneBy({ id: id });
+      const user = await this.userRepository.findOne({
+        where: { id: id },
+      });
       if (user) {
         return user;
       }
@@ -46,8 +48,10 @@ export class UsersService {
       HttpStatus.NOT_FOUND,
     );
   }
-  async getById(userId: number) {
-    const user = await this.userRepository.findOneBy({ id: userId });
+  async getById(userId: string) {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+    });
     if (user) {
       return user;
     }

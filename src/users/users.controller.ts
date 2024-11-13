@@ -1,4 +1,4 @@
-import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Param, ParseUUIDPipe } from '@nestjs/common';
 import { UsersService } from './users.service';
 
 @Controller('users')
@@ -12,7 +12,7 @@ export class UsersController {
   }
 
   @Get(':id')
-  async getUserById(@Param('id', ParseIntPipe) id: number) {
+  async getUserById(@Param('id', ParseUUIDPipe) id: string) {
     return await this.userService.getUserById(id);
   }
 }

@@ -1,9 +1,10 @@
 import { IsString, IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
 
 export class UpdatePostDto {
+  @IsString()
   @IsNumber()
   @IsOptional()
-  id: number;
+  id: string;
 
   @IsString()
   @IsNotEmpty()

@@ -2,8 +2,8 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 class Post {
-  @PrimaryGeneratedColumn()
-  public id?: number;
+  @PrimaryGeneratedColumn('uuid')
+  public id?: string;
 
   @Column()
   public title: string;

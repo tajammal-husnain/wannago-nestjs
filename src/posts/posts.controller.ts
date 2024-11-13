@@ -26,7 +26,7 @@ export default class PostsController {
   @Get(':id')
   getPostById(@Param() { id }: FindOneParams) {
     console.log('🚀 ~ PostsController ~ getPostById ~ postsService:', id);
-    return this.postsService.getPostById(Number(id));
+    return this.postsService.getPostById(id);
   }
 
   @Post('add')
@@ -40,11 +40,11 @@ export default class PostsController {
     @Param() { id }: FindOneParams,
     @Body() post: UpdatePostDto,
   ) {
-    return this.postsService.updatePost(Number(id), post);
+    return this.postsService.updatePost(id, post);
   }
 
   @Delete(':id')
   async deletePost(@Param() { id }: FindOneParams) {
-    return this.postsService.deletePost(Number(id));
+    return this.postsService.deletePost(id);
   }
 }
