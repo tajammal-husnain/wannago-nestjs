@@ -21,6 +21,10 @@ class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
   async validate(payload: TokenPayload) {
+    console.log(
+      `🤣 ~ file: jwt.strategy.ts:24 ~ JwtStrategy ~ validate ~ payload:`,
+      payload,
+    );
     return this.userService.getById(payload.userId);
   }
 }
