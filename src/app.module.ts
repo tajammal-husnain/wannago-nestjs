@@ -9,7 +9,10 @@ import { APP_FILTER } from '@nestjs/core';
 import { CategoriesModule } from './categories/categories.module';
 import { FilesModule } from './files/files.module';
 import { PrivateFileModule } from './private-file/private-file.module';
+import { TechniciansModule } from './technicians/technicians.module';
 import ExceptionsLoggerFilter from './utils/exceptionsLogger.filter';
+import { SeedModule } from './seed/seed.module';
+import { SettingsModule } from './settings/settings.module';
 
 @Module({
   imports: [
@@ -36,6 +39,9 @@ import ExceptionsLoggerFilter from './utils/exceptionsLogger.filter';
     CategoriesModule,
     FilesModule,
     PrivateFileModule,
+    TechniciansModule,
+    SeedModule,
+    SettingsModule,
   ],
   controllers: [],
   providers: [

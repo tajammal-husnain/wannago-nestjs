@@ -1,4 +1,3 @@
-import { Express, Request } from 'express';
 import {
   Body,
   Controller,
@@ -12,12 +11,11 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { UsersService } from './users.service';
-import JwtAuthenticationGuard from 'src/authentication/guards/jwt-authentication.guard';
-import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor } from '@nestjs/platform-express';
 import RequestWithUser from 'src/authentication/constants/requestWithUser.interface';
+import JwtAuthenticationGuard from 'src/authentication/guards/jwt-authentication.guard';
 import FilePath from './dto/file-path.dto';
-import { User } from './dto/user.dto';
+import { UsersService } from './users.service';
 
 @Controller('users')
 export class UsersController {
