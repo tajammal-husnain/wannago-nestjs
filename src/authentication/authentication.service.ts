@@ -1,50 +1,44 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-import { UsersService } from 'src/users/users.service';
-import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { PostgresErrorCode } from 'src/database/postgresErrorCodes.enum';
-import RegisterUserDto from './dto/register.dto';
+import { ConfigService } from '@nestjs/config';
+import { UserService } from 'src/users/services/user.service';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { plainToInstance } from 'class-transformer';
+import { SuperAdmin } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class AuthenticationService {
   constructor(
-    private readonly userService: UsersService,
+    private readonly userService: UserService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
   ) {}
 
-  public async registerUser(createUserData: RegisterUserDto) {
-    const hashedPassword = await bcrypt.hash(createUserData.password, 10);
-    try {
-      const userToCreate = {
-        ...createUserData,
-        password: hashedPassword,
-      };
-      let createdUser = await this.userService.createUser(userToCreate);
-      return { ...createdUser, password: undefined };
-    } catch (error) {
-      if (error?.code === PostgresErrorCode.UniqueViolation) {
-        throw new HttpException(
-          'User with that email already exists',
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-      throw new HttpException(
-        'Something went wrong',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
+  async login(email: string, password: string) {
+    const verifiedUser = await this.getAuthenticatedUser(email, password);
+    if (!verifiedUser)
+      throw new HttpException('Invalid credentials', HttpStatus.BAD_REQUEST);
+
+    const token = this.jwtService.sign({ id: verifiedUser.id });
+
+    const userResponse = plainToInstance(SuperAdmin, {
+      data: verifiedUser,
+      token: token,
+    });
+    return userResponse;
   }
 
   public async getAuthenticatedUser(email: string, password: string) {
     try {
       const user = await this.userService.getByEmail(email);
-      await this.verifyPassword(password, user.password);
-      return user;
+      const isPasswordMatched = await this.verifyPassword(
+        password,
+        user.password,
+      );
+      if (isPasswordMatched) return user;
     } catch (error) {
       throw new HttpException(
-        'Wrong credentials provided',
+        'Wrong credentials provided' + error,
         HttpStatus.BAD_REQUEST,
       );
     }

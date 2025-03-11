@@ -25,34 +25,74 @@ export class SettingsService {
   ) {}
   async getRegions() {
     console.log('🚀 ~ SettingsService ~ getRegions ~ getRegions is called:');
-    return this.regionRepository.find();
+    const regionsList = await this.regionRepository.find();
+    return {
+      data: regionsList,
+      description: 'List of all regions',
+    };
   }
   async getCities(id?: string) {
     console.log('🚀 ~ SettingsService ~ getCities ~ getCities  is called:');
-    return this.cityRepository.find({ where: { region: { id } } });
+    const citiesList = await this.cityRepository.find({
+      where: { region: { id } },
+    });
+    return {
+      data: citiesList,
+      description: 'List of all cities',
+    };
   }
   async getDistricts(id?: string) {
     console.log(
       '🚀 ~ SettingsService ~ getDistricts ~ getDistricts  is called:',
     );
-    return this.districtRepository.find({ where: { city: { id } } });
+    const districtsList = await this.districtRepository.find({
+      where: { city: { id } },
+    });
+    return {
+      data: districtsList,
+      description: 'List of all districts',
+    };
   }
   async getLanguages() {
     console.log(
       '🚀 ~ SettingsService ~ getLanguages ~ getLanguages is called:',
     );
-    return this.languagesRepository.find();
+    const languesList = await this.languagesRepository.find();
+    return {
+      data: languesList,
+      description: 'List of all langues',
+    };
   }
   async getSpecialties() {
     console.log(
       '🚀 ~ SettingsService ~ getSpecialties ~ getSpecialties  is called:',
     );
-    return this.specialtiesRepository.find();
+    const specialtiesList = await this.specialtiesRepository.find();
+    return {
+      data: specialtiesList,
+      description: 'List of all specialties',
+    };
   }
   async getCertificates() {
     console.log(
       '🚀 ~ SettingsService ~ getCertificates ~ getCertificates  is called:',
     );
-    return this.certificatesRepository.find();
+    const certificatesList = await this.certificatesRepository.find();
+    return {
+      data: certificatesList,
+      description: 'List of all certificates',
+    };
   }
+
+  // async getOneCity(id: string) {
+  //   console.log(`🚀 -- getOneCity is called:`);
+  //   const cityFound = await this.cityRepository.findOne({
+  //     where: { regionId: id },
+  //   });
+  //   if (!cityFound) throw new NotFoundException(`City with ${id} not found`);
+  //   return {
+  //     data: cityFound,
+  //     description: `City found with ${id}`,
+  //   };
+  // }
 }

@@ -1,52 +1,339 @@
-import { Exclude, Expose } from 'class-transformer';
+// import {
+//   Entity,
+//   PrimaryGeneratedColumn,
+//   Column,
+//   ManyToOne,
+//   CreateDateColumn,
+//   UpdateDateColumn,
+// } from 'typeorm';
+// import { IsEmail, IsOptional } from 'class-validator';
+// import { Region } from 'src/seed/entities/regions.entity';
+// import { District } from 'src/seed/entities/districts.entity';
+// import { City } from 'src/seed/entities/city.entity';
+// import { Segment } from 'src/seed/entities/segment.entity';
+
+// export enum UserType {
+//   TECHNICIAN = 'technician',
+//   CUSTOMER = 'customer',
+//   ADMIN = 'admin',
+//   null = null,
+// }
+
+// @Entity('users')
+// export class User {
+//   @PrimaryGeneratedColumn('uuid')
+//   id: string;
+
+//   @Column({ type: 'enum', enum: UserType, nullable: true })
+//   userType: UserType;
+
+//   @Column()
+//   firstName: string;
+
+//   @Column()
+//   lastName: string;
+
+//   @Column({ unique: true })
+//   @IsEmail()
+//   email: string;
+
+//   @Column()
+//   @IsOptional()
+//   phoneNumber: string;
+
+//   @Column()
+//   @IsOptional()
+//   dateOfBirth?: string;
+
+//   @Column()
+//   @IsOptional()
+//   password: string;
+
+//   @Column({ nullable: true })
+//   @IsOptional()
+//   profilePictureFile?: string;
+
+//   @Column()
+//   @IsOptional()
+//   nationality: string;
+
+//   @Column()
+//   @IsOptional()
+//   @ManyToOne(() => Region, (region) => region.user, {
+//     eager: true,
+//     nullable: true,
+//   })
+//   region?: Region;
+
+//   @Column()
+//   @IsOptional()
+//   @ManyToOne(() => City, (city) => city.user, {
+//     eager: true,
+//     nullable: true,
+//   })
+//   city?: City;
+
+//   @Column()
+//   @IsOptional()
+//   @ManyToOne(() => District, (district) => district.user, {
+//     eager: true,
+//     nullable: true,
+//   })
+//   district?: District;
+
+//   @Column({ nullable: true })
+//   @IsOptional()
+//   zipCode?: string;
+
+//   @Column({ nullable: true })
+//   @IsOptional()
+//   primaryAddress?: string;
+
+//   @Column()
+//   @IsOptional()
+//   country: string;
+
+//   // Customer-specific fields (nullable for other user types)
+//   @Column({ nullable: true })
+//   @IsOptional()
+//   referredBy?: string;
+
+//   @Column({ nullable: true })
+//   @IsOptional()
+//   couponCode?: string;
+
+//   @Column({ nullable: true })
+//   @IsOptional()
+//   packageId?: string;
+
+//   @ManyToOne(() => Segment, (segment) => segment.user, {
+//     eager: true,
+//     nullable: true,
+//   })
+//   segmentId?: Segment;
+
+//   @Column({ nullable: true })
+//   @IsOptional()
+//   durationId?: string;
+
+//   @Column({ nullable: true })
+//   @IsOptional()
+//   billToPay?: string;
+
+//   // Technician-specific fields (nullable for other user types)
+//   @Column({ nullable: true })
+//   @IsOptional()
+//   professionType?: string;
+
+//   @Column({ nullable: true })
+//   @IsOptional()
+//   professionStatus?: string;
+
+//   @Column({ nullable: true })
+//   @IsOptional()
+//   technicianRateType?: string;
+
+//   @Column({ nullable: true })
+//   @IsOptional()
+//   technicianRate?: string;
+
+//   @Column({ nullable: true })
+//   @IsOptional()
+//   @IsOptional()
+//   identityFileFront?: string;
+
+//   @Column({ nullable: true })
+//   @IsOptional()
+//   identityFileBack?: string;
+
+//   @Column({ nullable: true })
+//   @IsOptional()
+//   resumeFile?: string;
+
+//   @Column({ nullable: true })
+//   @IsOptional()
+//   additionalDocuments?: string;
+
+//   @CreateDateColumn()
+//   createdAt: Date;
+
+//   @UpdateDateColumn()
+//   updatedAt: Date;
+// }
 import {
-  Column,
   Entity,
-  JoinColumn,
-  OneToMany,
-  OneToOne,
+  Column,
   PrimaryGeneratedColumn,
+  TableInheritance,
+  ChildEntity,
+  ManyToOne,
 } from 'typeorm';
-import Address from './address.entity';
-import Post from 'src/posts/entities/post.entity';
-import PublicFile from 'src/files/entities/public-file-entity';
-import PrivateFile from 'src/private-file/entities/private-file-entity';
+import { IsEmail, IsOptional } from 'class-validator';
+import { Region } from 'src/seed/entities/regions.entity';
+import { District } from 'src/seed/entities/districts.entity';
+import { City } from 'src/seed/entities/city.entity';
+import { Segment } from 'src/seed/entities/segment.entity';
+import { UserRoleType } from '../constants/user-role-type';
+import { IRateType } from '../constants/rate-type';
 
-@Entity({ name: 'users' })
+@Entity('users')
+@TableInheritance({
+  column: {
+    type: 'enum',
+    name: 'role',
+    enum: ['SUPER_ADMIN', 'ADMIN', 'CUSTOMER', 'TECHNICIAN'],
+  },
+})
 class User {
+  @Column()
   @PrimaryGeneratedColumn('uuid')
-  public id?: string;
+  id: string;
 
-  @Column({ unique: true })
-  @Expose()
-  public email: string;
+  @Column({ type: 'varchar', length: 100 })
+  firstName: string;
 
-  @Column()
-  @Expose()
-  public name: string;
+  @Column({ type: 'varchar', length: 100 })
+  lastName: string;
 
   @Column()
-  @Exclude()
-  public password: string;
+  @IsEmail()
+  email: string;
 
-  @OneToOne(() => Address, {
+  @Column({ default: 'hello@123' })
+  password: string;
+
+  @Column({ nullable: true })
+  @IsOptional()
+  nationality?: string;
+
+  @Column({ nullable: true })
+  @IsOptional()
+  phone?: string;
+
+  @Column({ nullable: true })
+  @IsOptional()
+  address?: string;
+
+  @Column({ nullable: true })
+  @ManyToOne(() => Region, (region) => region.user, {
     eager: true,
-    cascade: true,
+    nullable: true,
   })
-  @JoinColumn()
-  public address: Address;
+  @IsOptional()
+  region?: string;
 
-  @OneToMany(() => Post, (post: Post) => post.author)
-  public posts?: Post[];
+  @Column({ nullable: true })
+  @ManyToOne(() => City, (city) => city.user, {
+    eager: true,
+    nullable: true,
+  })
+  @IsOptional()
+  city?: string;
 
-  @JoinColumn()
-  @OneToOne(() => PublicFile, { eager: true, nullable: true })
-  public avatar?: PublicFile;
+  @Column({ nullable: true })
+  @ManyToOne(() => District, (district) => district.user, {
+    eager: true,
+    nullable: true,
+  })
+  @IsOptional()
+  district?: string;
 
-  @OneToMany(
-    () => PrivateFile,
-    (privateFile: PrivateFile) => privateFile?.owner,
-  )
-  public privateFiles: PrivateFile[];
+  @Column({ nullable: true })
+  @IsOptional()
+  zipCode?: string;
+
+  @Column({ nullable: true })
+  @IsOptional()
+  country?: string;
+
+  @Column({
+    type: 'enum',
+    enum: UserRoleType,
+  })
+  role: UserRoleType;
 }
-export default User;
+
+@ChildEntity(UserRoleType.SUPER_ADMIN)
+class SuperAdmin extends User {
+  @Column({ nullable: true })
+  area?: string;
+}
+
+@ChildEntity(UserRoleType.ADMIN)
+class Admin extends User {
+  @Column({ nullable: true })
+  roldeId?: string;
+}
+
+@ChildEntity(UserRoleType.CUSTOMER)
+class Customer extends User {
+  @Column({ nullable: true })
+  referredBy?: string;
+
+  @Column({ nullable: true })
+  couponCode?: string;
+
+  @Column({ nullable: true })
+  packageId?: string;
+
+  @Column({ nullable: true })
+  durationId?: string;
+
+  @Column({ nullable: true })
+  profilePicture?: string;
+
+  @Column({ nullable: true })
+  @ManyToOne(() => Segment, (segment) => segment.user, {
+    eager: true,
+    nullable: true,
+  })
+  segmentId?: string;
+
+  @Column({ nullable: true })
+  billToPay?: string;
+}
+
+@ChildEntity(UserRoleType.TECHNICIAN)
+class Technician extends User {
+  @Column({ nullable: true })
+  professionType?: string;
+
+  @Column({ nullable: true })
+  professionStatus?: string;
+
+  @Column({
+    type: 'enum',
+    enum: IRateType,
+    nullable: true,
+  })
+  rateType?: IRateType;
+
+  @Column({ nullable: true })
+  profilePicture?: string;
+
+  @Column({ type: 'decimal', nullable: true })
+  rate?: string;
+
+  @Column({ nullable: true })
+  identityFileFront?: string;
+
+  @Column({ nullable: true })
+  identityFileBack?: string;
+
+  @Column({ nullable: true })
+  resumeFile?: string;
+
+  @Column('simple-array', { nullable: true })
+  languages?: string[];
+
+  @Column('simple-array', { nullable: true })
+  certificates?: string[];
+
+  @Column({ nullable: true })
+  availability?: string; // E.g., "Monday to Friday 9am-5pm"
+
+  @Column('simple-array', { nullable: true })
+  additionalDocuments?: string[];
+}
+
+export { User, SuperAdmin, Admin, Customer, Technician };

@@ -5,7 +5,10 @@ import { Language } from './entities/language.entity';
 import { District } from './entities/districts.entity';
 import { DataSource, EntityManager, Repository } from 'typeorm';
 import {
+  durationsList,
   regionsData,
+  segmentsList,
+  superAdminData,
   technicianCertificates,
   technicianLanguages,
   technicianSpecialties,
@@ -13,6 +16,9 @@ import {
 import { Specialty } from './entities/specialty.entity';
 import { Certificate } from './entities/certificate.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Duration } from './entities/durations.entity';
+import { Segment } from './entities/segment.entity';
+import { UserService } from 'src/users/services/user.service';
 
 @Injectable()
 export class SeederService {
@@ -20,12 +26,17 @@ export class SeederService {
 
   constructor(
     private readonly dataSource: DataSource,
+    private userService: UserService,
     @InjectRepository(Language)
     private readonly languagesRepository: Repository<Language>,
     @InjectRepository(Specialty)
     private readonly specialtiesRepository: Repository<Specialty>,
     @InjectRepository(Certificate)
     private readonly certificatesRepository: Repository<Certificate>,
+    @InjectRepository(Duration)
+    private readonly durationsRepository: Repository<Duration>,
+    @InjectRepository(Segment)
+    private readonly segmentRepository: Repository<Segment>,
   ) {}
 
   async seedData(): Promise<void> {
@@ -34,6 +45,9 @@ export class SeederService {
       await this.seedLanguageData();
       await this.seedSpecialtyData();
       await this.seedCertificateEntityData();
+      await this.seedDurationsData();
+      await this.segmentsData();
+      await this.seedSuperAdminData();
       await this.dataSource.transaction(async (manager) => {
         try {
           await this.seedRegionsCitiesAndDistricts(manager);
@@ -111,17 +125,17 @@ export class SeederService {
     this.logger.log('Starting seeding language data...');
     try {
       for (const languageName of technicianLanguages) {
-        const existingLanguage = this.languagesRepository.find({
+        const existingLanguage = await this.languagesRepository.findOne({
           where: {
             name: languageName,
           },
         });
-        if (existingLanguage) continue;
-
-        const language = this.languagesRepository.create({
-          name: languageName,
-        });
-        await this.languagesRepository.save(language);
+        if (!existingLanguage) {
+          const language = this.languagesRepository.create({
+            name: languageName,
+          });
+          await this.languagesRepository.save(language);
+        }
       }
     } catch (error: any) {
       this.logger.error('Error seeding language data:', error.message);
@@ -131,10 +145,10 @@ export class SeederService {
     this.logger.log('Starting seeding specialty data...');
     try {
       for (const specialtyName of technicianSpecialties) {
-        const existingSpecialty = this.specialtiesRepository.find({
+        const existingSpecialty = await this.specialtiesRepository.findOne({
           where: { name: specialtyName },
         });
-        if (existingSpecialty) continue;
+        if (existingSpecialty) return;
 
         const specialty = this.specialtiesRepository.create({
           name: specialtyName,
@@ -149,10 +163,10 @@ export class SeederService {
     this.logger.log('Starting seeding certificates data...');
     try {
       for (const certificateName of technicianCertificates) {
-        const existingSpecialty = this.certificatesRepository.find({
+        const existingSpecialty = await this.certificatesRepository.findOne({
           where: { name: certificateName },
         });
-        if (existingSpecialty) continue;
+        if (existingSpecialty) return;
 
         const certificate = this.certificatesRepository.create({
           name: certificateName,
@@ -161,6 +175,45 @@ export class SeederService {
       }
     } catch (error: any) {
       this.logger.log('Error seeding certificates data:', error.message);
+    }
+  }
+  private async seedDurationsData(): Promise<void> {
+    this.logger.log('Starting seeding durations data...');
+    try {
+      for (const duration of durationsList) {
+        const existingDuration = await this.durationsRepository.findOne({
+          where: { durationCode: duration?.durationCode },
+        });
+        if (existingDuration) return;
+
+        const durationObj = this.durationsRepository.create({ ...duration });
+        await this.durationsRepository.save(durationObj);
+      }
+    } catch (error: any) {
+      this.logger.log(`Error occurred while seeding durations data ${error}`);
+    }
+  }
+  private async segmentsData(): Promise<void> {
+    this.logger.log('Starting seeding segments data...');
+    try {
+      for (const segment of segmentsList) {
+        const existingDuration = await this.segmentRepository.findOne({
+          where: { segmentCode: segment?.segmentCode },
+        });
+        if (existingDuration) return;
+
+        const segmentObj = this.segmentRepository.create({ ...segment });
+        await this.segmentRepository.save(segmentObj);
+      }
+    } catch (error: any) {
+      this.logger.log(`Error occurred while seeding segments data ${error}`);
+    }
+  }
+  private async seedSuperAdminData() {
+    try {
+      return this.userService.createSuperAdmin(superAdminData);
+    } catch (error) {
+      this.logger.log(`Error seeding super admin data ${error}`);
     }
   }
 }

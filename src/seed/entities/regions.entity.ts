@@ -7,7 +7,7 @@ import {
   BaseEntity,
 } from 'typeorm';
 import { City } from './city.entity';
-import { Technician } from 'src/technicians/entities/technician.entity';
+import { User } from 'src/users/entities/user.entity';
 
 @Entity()
 export class Region extends BaseEntity {
@@ -20,6 +20,6 @@ export class Region extends BaseEntity {
   @OneToMany(() => City, (city) => city.region, { cascade: true })
   cities: City[];
 
-  @OneToMany(() => Technician, (technician) => technician.region)
-  technicians: Technician[];
+  @OneToMany(() => User, (user) => user.region)
+  user: User[];
 }

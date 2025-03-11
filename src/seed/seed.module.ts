@@ -7,9 +7,13 @@ import { District } from './entities/districts.entity';
 import { Language } from './entities/language.entity';
 import { Specialty } from './entities/specialty.entity';
 import { Certificate } from './entities/certificate.entity';
+import { Duration } from './entities/durations.entity';
+import { Segment } from './entities/segment.entity';
+import { UsersModule } from 'src/users/users.module';
 
 @Module({
   imports: [
+    UsersModule,
     TypeOrmModule.forFeature([
       Region,
       City,
@@ -17,6 +21,8 @@ import { Certificate } from './entities/certificate.entity';
       Language,
       Specialty,
       Certificate,
+      Duration,
+      Segment,
     ]),
   ],
   providers: [SeederService],

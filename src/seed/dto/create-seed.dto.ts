@@ -23,3 +23,26 @@ export class CreateDistrictDto {
   @IsNotEmpty()
   name: string;
 }
+export class CreateSegmentDto {
+  @IsString()
+  @IsNotEmpty()
+  segmentName: string;
+
+  @IsString()
+  @IsNotEmpty()
+  segmentCode: string;
+
+  @IsString()
+  @IsNotEmpty()
+  segmentDescription: string;
+}
+
+export class CreateDurationDto {
+  @IsString()
+  @IsNotEmpty()
+  durationType: string;
+
+  @IsString()
+  @IsNotEmpty()
+  durationCode: string;
+}

@@ -1,3 +1,5 @@
+import { UserRoleType } from 'src/users/constants/user-role-type';
+
 const regionsData = [
   {
     regionName: 'Punjab',
@@ -196,6 +198,7 @@ const regionsData = [
   },
 ];
 const technicianLanguages = ['English', 'Urdu', 'Arabic'];
+
 const technicianSpecialties = [
   'Antivirus and Malware Removal',
   'Asset Management',
@@ -235,14 +238,89 @@ const technicianSpecialties = [
   'Work Under Pressure',
   'Workstation Setup',
 ];
+
 const technicianCertificates = [
   'CompTIA A',
   'CompTIA IT Fundamentals (ITF+)',
   'HDI Desktop Support Technician Certification',
   'Microsoft Certified: Modern Desktop Administrator Associate',
 ];
+
+const segmentsList = [
+  {
+    segmentName: 'Micro Business',
+    segmentCode: 'micro_bussiness',
+    segmentDescription: 'Number of employees on 1 to 5 full-time',
+  },
+  {
+    segmentName: 'Small Business',
+    segmentCode: 'small_bussiness',
+    segmentDescription: 'Number of employees on 6 to 49 full-time',
+  },
+  {
+    segmentName: 'Medium Business',
+    segmentCode: 'midsize_bussiness',
+    segmentDescription: 'Number of employees on 50 to 249 full-time',
+  },
+  {
+    segmentName: 'Large Business',
+    segmentCode: 'enterprise_bussiness',
+    segmentDescription: 'Number of employees 250 or more full-time',
+  },
+];
+
+const durationsList = [
+  {
+    durationType: 'Monthly',
+    durationCode: 'monthly',
+  },
+  {
+    durationType: 'Quarterly',
+    durationCode: 'quarterly',
+  },
+  {
+    durationType: 'Semi Annually',
+    durationCode: 'semi_annually',
+  },
+  {
+    durationType: 'Annual',
+    durationCode: 'annual',
+  },
+];
+
+const rolesData = [
+  {
+    roleName: 'Super Admin',
+    roleCode: 'super_admin',
+  },
+  {
+    roleName: 'Admin',
+    roleCode: 'admin',
+  },
+  {
+    roleName: 'Customer',
+    roleCode: 'customer',
+  },
+  {
+    roleName: 'Technician',
+    roleCode: 'technician',
+  },
+];
+
+const superAdminData = {
+  firstName: 'Super',
+  lastName: 'Admin',
+  email: 'chhassnain16@gmail.com',
+  password: 'Hello@123',
+  role: UserRoleType.SUPER_ADMIN,
+};
+
 export {
+  rolesData,
   regionsData,
+  segmentsList,
+  durationsList,
+  superAdminData,
   technicianLanguages,
   technicianCertificates,
   technicianSpecialties,

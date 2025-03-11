@@ -1,18 +1,14 @@
 import * as Joi from '@hapi/joi';
 import { Module } from '@nestjs/common';
-import { PostsModule } from './posts/posts.module';
 import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from './database/database.module';
-import { UsersModule } from './users/users.module';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { APP_FILTER } from '@nestjs/core';
-import { CategoriesModule } from './categories/categories.module';
-import { FilesModule } from './files/files.module';
-import { PrivateFileModule } from './private-file/private-file.module';
-import { TechniciansModule } from './technicians/technicians.module';
 import ExceptionsLoggerFilter from './utils/exceptionsLogger.filter';
 import { SeedModule } from './seed/seed.module';
 import { SettingsModule } from './settings/settings.module';
+import { UsersModule } from './users/users.module';
+import { PackagesService } from './packages/services/package.service';
 
 @Module({
   imports: [
@@ -33,15 +29,10 @@ import { SettingsModule } from './settings/settings.module';
       }),
     }),
     DatabaseModule,
-    UsersModule,
-    PostsModule,
     AuthenticationModule,
-    CategoriesModule,
-    FilesModule,
-    PrivateFileModule,
-    TechniciansModule,
     SeedModule,
     SettingsModule,
+    UsersModule,
   ],
   controllers: [],
   providers: [
@@ -49,6 +40,7 @@ import { SettingsModule } from './settings/settings.module';
       provide: APP_FILTER,
       useClass: ExceptionsLoggerFilter,
     },
+    PackagesService,
   ],
 })
 export class AppModule {}

@@ -1,20 +1,35 @@
 import { Module } from '@nestjs/common';
+import { UserService } from './services/user.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import User from './entities/user.entity';
-import { UsersController } from './users.controller';
-import { UsersService } from './users.service';
-import { FilesModule } from 'src/files/files.module';
-import Address from './entities/address.entity';
-import { PrivateFileModule } from 'src/private-file/private-file.module';
+import { Region } from 'src/seed/entities/regions.entity';
+import { City } from 'src/seed/entities/city.entity';
+import { District } from 'src/seed/entities/districts.entity';
+import { Language } from 'src/seed/entities/language.entity';
+import { Specialty } from 'src/seed/entities/specialty.entity';
+import { Certificate } from 'src/seed/entities/certificate.entity';
+import { UserController } from './controllers/user.controller';
+import { Customer, SuperAdmin, Technician, User } from './entities/user.entity';
+import { PrivateFileService } from './services/private-file.service';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Address]),
-    FilesModule,
-    PrivateFileModule,
+    ConfigModule,
+    TypeOrmModule.forFeature([
+      SuperAdmin,
+      User,
+      Customer,
+      Technician,
+      Region,
+      City,
+      District,
+      Language,
+      Specialty,
+      Certificate,
+    ]),
   ],
-  controllers: [UsersController],
-  providers: [UsersService],
-  exports: [UsersService],
+  controllers: [UserController],
+  providers: [UserService, PrivateFileService],
+  exports: [PrivateFileService, UserService],
 })
 export class UsersModule {}

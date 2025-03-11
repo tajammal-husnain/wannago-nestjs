@@ -7,7 +7,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { City } from './city.entity';
-import { Technician } from 'src/technicians/entities/technician.entity';
+import { User } from 'src/users/entities/user.entity';
 
 @Entity()
 export class District {
@@ -20,6 +20,6 @@ export class District {
   @ManyToOne(() => City, (city) => city.districts)
   city: City;
 
-  @OneToMany(() => Technician, (technician) => technician.region)
-  technicians: Technician[];
+  @OneToMany(() => User, (user) => user.district)
+  user: User[];
 }
