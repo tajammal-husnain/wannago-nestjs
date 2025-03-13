@@ -8,7 +8,9 @@ import ExceptionsLoggerFilter from './utils/exceptionsLogger.filter';
 import { SeedModule } from './seed/seed.module';
 import { SettingsModule } from './settings/settings.module';
 import { UsersModule } from './users/users.module';
-import { PackagesService } from './packages/services/package.service';
+import { PackageModule } from './packages/package.module';
+import { OfferedServicesModule } from './offered-services/offered-services.module';
+import CategoryModule from './service-categories/category.module';
 
 @Module({
   imports: [
@@ -33,6 +35,9 @@ import { PackagesService } from './packages/services/package.service';
     SeedModule,
     SettingsModule,
     UsersModule,
+    PackageModule,
+    OfferedServicesModule,
+    CategoryModule,
   ],
   controllers: [],
   providers: [
@@ -40,7 +45,6 @@ import { PackagesService } from './packages/services/package.service';
       provide: APP_FILTER,
       useClass: ExceptionsLoggerFilter,
     },
-    PackagesService,
   ],
 })
 export class AppModule {}
