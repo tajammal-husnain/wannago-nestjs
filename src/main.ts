@@ -46,8 +46,8 @@ async function bootstrap() {
     region: configService.get('AWS_REGION'),
   });
   const swaggerConfig = new DocumentBuilder()
-    .setTitle('Blockbit')
-    .setDescription('Blockbit Api description')
+    .setTitle('Tophat')
+    .setDescription('Tophat Api description')
     .setVersion('0.0')
     .build();
 

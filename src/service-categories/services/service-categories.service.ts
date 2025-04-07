@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Category } from '../entities/category.entity';
 import { CreateCategoryDto, UpdateCategoryDto } from '../dtos/category.dto';
+import { BaseResponse } from 'src/shared/dtos/base-api-response';
 
 @Injectable()
 export class CategoryService {
@@ -17,29 +18,41 @@ export class CategoryService {
   }
 
   async findAll(): Promise<Category[]> {
-    return await this.categoryRepository.find();
+    const categories = await this.categoryRepository.find();
+    return categories;
   }
 
-  async findOne(id: number): Promise<Category> {
-    const category = await this.categoryRepository.findOne({ where: { id } });
+  async findOne(id: string): Promise<Category> {
+    const category = await this.categoryRepository.findOne({
+      where: { id },
+    });
     if (!category)
       throw new NotFoundException(`Category with ID ${id} not found`);
     return category;
   }
 
   async update(
-    id: number,
+    id: string,
     updateCategoryDto: UpdateCategoryDto,
   ): Promise<Category> {
+    const category = await this.categoryRepository.findOne({
+      where: { id },
+    });
+    if (!category)
+      throw new NotFoundException(`Category with ID ${id} not found`);
     await this.categoryRepository.update(id, updateCategoryDto);
     return await this.findOne(id);
   }
 
-  async softDelete(id: number): Promise<void> {
+  async delete(id: string): Promise<BaseResponse> {
+    const category = await this.categoryRepository.findOne({
+      where: { id },
+    });
+    if (!category)
+      throw new NotFoundException(`Category with ID ${id} not found`);
     await this.categoryRepository.update(id, { isDeleted: true });
-  }
-
-  async delete(id: number): Promise<void> {
-    await this.categoryRepository.delete(id);
+    return {
+      message: `Category with ID ${id} deleted successfully`,
+    };
   }
 }

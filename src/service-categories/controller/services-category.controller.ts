@@ -6,11 +6,11 @@ import {
   Delete,
   Body,
   Param,
-  ParseIntPipe,
 } from '@nestjs/common';
 import { CreateCategoryDto, UpdateCategoryDto } from '../dtos/category.dto';
 import { Category } from '../entities/category.entity';
 import { CategoryService } from '../services/service-categories.service';
+import { BaseResponse } from 'src/shared/dtos/base-api-response';
 
 @Controller('categories')
 export class CategoryController {
@@ -24,30 +24,33 @@ export class CategoryController {
   }
 
   @Get()
-  async findAll(): Promise<Category[]> {
-    return this.categoryService.findAll();
+  async findAll(): Promise<BaseResponse> {
+    const categories = await this.categoryService.findAll();
+    return { data: categories };
   }
 
   @Get(':id')
-  async findOne(@Param('id', ParseIntPipe) id: number): Promise<Category> {
-    return this.categoryService.findOne(id);
+  async findOne(@Param('id') id: string): Promise<BaseResponse> {
+    const category = await this.categoryService.findOne(id);
+    return { data: category };
   }
 
   @Put(':id')
   async update(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id') id: string,
     @Body() updateCategoryDto: UpdateCategoryDto,
-  ): Promise<Category> {
-    return this.categoryService.update(id, updateCategoryDto);
+  ): Promise<BaseResponse> {
+    const updatedCategory = await this.categoryService.update(
+      id,
+      updateCategoryDto,
+    );
+    return {
+      data: updatedCategory,
+    };
   }
 
   @Delete(':id')
-  async delete(@Param('id', ParseIntPipe) id: number): Promise<void> {
-    return this.categoryService.delete(id);
-  }
-
-  @Put(':id/soft-delete')
-  async softDelete(@Param('id', ParseIntPipe) id: number): Promise<void> {
-    return this.categoryService.softDelete(id);
+  async delete(@Param('id') id: string): Promise<BaseResponse> {
+    return await this.categoryService.delete(id);
   }
 }

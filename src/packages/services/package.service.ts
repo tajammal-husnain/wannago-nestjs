@@ -15,7 +15,6 @@ export class PackagesService {
   async createPackage(createPackageInput: CreatePackageDto) {
     try {
       const packageObj = this.packageService.create(createPackageInput);
-      console.log(`🚀 -- packageObj is called:`, packageObj);
       await this.packageService.save(packageObj);
       return packageObj;
     } catch (error) {
