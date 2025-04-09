@@ -10,7 +10,7 @@ export class CreateCategoryDto {
   @IsOptional()
   @IsString()
   @ApiProperty()
-  categoryDescription?: string;
+  description?: string;
 
   @IsBoolean()
   @ApiProperty()
@@ -32,7 +32,7 @@ export class UpdateCategoryDto {
 
   @IsOptional()
   @IsString()
-  categoryDescription?: string;
+  description?: string;
 
   @IsOptional()
   @IsBoolean()

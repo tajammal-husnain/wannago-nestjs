@@ -49,6 +49,13 @@ export class SettingsController {
     return this.settingsService.getCertificates();
   }
 
+  @Get('permissions')
+  @ApiOperation({ summary: 'Get list of permissions' })
+  @ApiResponse({ status: 200, description: 'List of all permissions' })
+  getPermissions() {
+    return this.settingsService.getCertificates();
+  }
+
   // @Get('city')
   // @ApiOperation({ summary: 'Get city through id' })
   // @ApiResponse({ status: 200, description: 'Find city using city id' })

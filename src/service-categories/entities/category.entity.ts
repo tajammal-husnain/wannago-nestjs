@@ -17,7 +17,7 @@ export class Category {
   categoryName: string;
 
   @Column({ type: 'text', nullable: true })
-  categoryDescription: string;
+  description: string;
 
   @Column({ type: 'boolean', default: false })
   ixTexual: boolean;

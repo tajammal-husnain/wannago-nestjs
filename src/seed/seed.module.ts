@@ -10,6 +10,8 @@ import { Certificate } from './entities/certificate.entity';
 import { Duration } from './entities/durations.entity';
 import { Segment } from './entities/segment.entity';
 import { UsersModule } from 'src/users/users.module';
+import { Permission } from './entities/permission.entity';
+import { Role } from 'src/roles/entities/role.entity';
 
 @Module({
   imports: [
@@ -23,6 +25,8 @@ import { UsersModule } from 'src/users/users.module';
       Certificate,
       Duration,
       Segment,
+      Permission,
+      Role,
     ]),
   ],
   providers: [SeederService],

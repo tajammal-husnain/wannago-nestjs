@@ -12,13 +12,16 @@ export class CategoryService {
     private categoryRepository: Repository<Category>,
   ) {}
 
-  async create(createCategoryDto: CreateCategoryDto): Promise<Category> {
+  async create(createCategoryDto: CreateCategoryDto): Promise<BaseResponse> {
     const category = this.categoryRepository.create(createCategoryDto);
-    return await this.categoryRepository.save(category);
+    const savedCategory = await this.categoryRepository.save(category);
+    return { message: 'Category created successfully', data: savedCategory };
   }
 
   async findAll(): Promise<Category[]> {
     const categories = await this.categoryRepository.find();
+    if (!categories && categories?.length <= 0)
+      throw new NotFoundException(`Not categories found`);
     return categories;
   }
 

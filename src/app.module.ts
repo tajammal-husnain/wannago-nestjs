@@ -11,6 +11,7 @@ import { UsersModule } from './users/users.module';
 import { PackageModule } from './packages/package.module';
 import { OfferedServicesModule } from './offered-services/offered-services.module';
 import CategoryModule from './service-categories/category.module';
+import { RoleModule } from './roles/role.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import CategoryModule from './service-categories/category.module';
     PackageModule,
     OfferedServicesModule,
     CategoryModule,
+    RoleModule,
   ],
   controllers: [],
   providers: [

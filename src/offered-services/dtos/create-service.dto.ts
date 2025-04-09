@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { Category } from 'src/service-categories/entities/category.entity';
 
 export class CreateServiceDto {
   @IsString()
@@ -34,7 +35,7 @@ export class CreateServiceDto {
   isDeleted: false;
 }
 
-export class UpdateCreateServiceDto {
+export class UpdateServiceDto {
   @IsString()
   @IsOptional()
   name: string;
@@ -49,7 +50,7 @@ export class UpdateCreateServiceDto {
 
   @IsString()
   @IsOptional()
-  categoryId: string;
+  categoryId: Category;
 
   @IsOptional()
   @IsBoolean()

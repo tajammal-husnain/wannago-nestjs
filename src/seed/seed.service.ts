@@ -12,6 +12,7 @@ import {
   technicianCertificates,
   technicianLanguages,
   technicianSpecialties,
+  Permissions as PermissionsList,
 } from './data/seederData';
 import { Specialty } from './entities/specialty.entity';
 import { Certificate } from './entities/certificate.entity';
@@ -19,6 +20,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Duration } from './entities/durations.entity';
 import { Segment } from './entities/segment.entity';
 import { UserService } from 'src/users/services/user.service';
+import { Permission } from './entities/permission.entity';
 
 @Injectable()
 export class SeederService {
@@ -37,6 +39,8 @@ export class SeederService {
     private readonly durationsRepository: Repository<Duration>,
     @InjectRepository(Segment)
     private readonly segmentRepository: Repository<Segment>,
+    @InjectRepository(Permission)
+    private readonly permissionRepository: Repository<Permission>,
   ) {}
 
   async seedData(): Promise<void> {
@@ -48,6 +52,7 @@ export class SeederService {
       await this.seedDurationsData();
       await this.segmentsData();
       await this.seedSuperAdminData();
+      await this.seedPermissionsData();
       await this.dataSource.transaction(async (manager) => {
         try {
           await this.seedRegionsCitiesAndDistricts(manager);
@@ -214,6 +219,23 @@ export class SeederService {
       return this.userService.createSuperAdmin(superAdminData);
     } catch (error) {
       this.logger.log(`Error seeding super admin data ${error}`);
+    }
+  }
+  private async seedPermissionsData(): Promise<void> {
+    this.logger.log('Starting seeding permission data...');
+    try {
+      PermissionsList.forEach(async (permission: any) => {
+        const existingPermission = await this.permissionRepository.findOne({
+          where: { name: permission?.name },
+        });
+        if (!existingPermission) {
+          const createdPermission =
+            this.permissionRepository.create(permission);
+          await this.permissionRepository.save(createdPermission);
+        }
+      });
+    } catch (error) {
+      this.logger.log(`Error occurred while seeding permissions data ${error}`);
     }
   }
 }

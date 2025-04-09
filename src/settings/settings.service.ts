@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Language } from 'src/seed/entities/language.entity';
 import { Specialty } from 'src/seed/entities/specialty.entity';
 import { Certificate } from 'src/seed/entities/certificate.entity';
+import { Permission } from 'src/seed/entities/permission.entity';
 @Injectable()
 export class SettingsService {
   constructor(
@@ -22,6 +23,8 @@ export class SettingsService {
     private readonly specialtiesRepository: Repository<Specialty>,
     @InjectRepository(Certificate)
     private readonly certificatesRepository: Repository<Certificate>,
+    @InjectRepository(Permission)
+    private readonly permissionRepository: Repository<Permission>,
   ) {}
   async getRegions() {
     console.log('🚀 ~ SettingsService ~ getRegions ~ getRegions is called:');
@@ -81,6 +84,14 @@ export class SettingsService {
     return {
       data: certificatesList,
       description: 'List of all certificates',
+    };
+  }
+
+  async getPermissions() {
+    const permissionsList = await this.permissionRepository.find();
+    return {
+      data: permissionsList,
+      description: 'List of all permissions',
     };
   }
 

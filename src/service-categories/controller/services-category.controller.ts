@@ -8,7 +8,6 @@ import {
   Param,
 } from '@nestjs/common';
 import { CreateCategoryDto, UpdateCategoryDto } from '../dtos/category.dto';
-import { Category } from '../entities/category.entity';
 import { CategoryService } from '../services/service-categories.service';
 import { BaseResponse } from 'src/shared/dtos/base-api-response';
 
@@ -19,8 +18,8 @@ export class CategoryController {
   @Post()
   async create(
     @Body() createCategoryDto: CreateCategoryDto,
-  ): Promise<Category> {
-    return this.categoryService.create(createCategoryDto);
+  ): Promise<BaseResponse> {
+    return await this.categoryService.create(createCategoryDto);
   }
 
   @Get()

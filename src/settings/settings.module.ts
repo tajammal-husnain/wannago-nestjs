@@ -8,6 +8,7 @@ import { District } from 'src/seed/entities/districts.entity';
 import { Language } from 'src/seed/entities/language.entity';
 import { Specialty } from 'src/seed/entities/specialty.entity';
 import { Certificate } from 'src/seed/entities/certificate.entity';
+import { Permission } from 'src/seed/entities/permission.entity';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { Certificate } from 'src/seed/entities/certificate.entity';
       Language,
       Specialty,
       Certificate,
+      Permission,
     ]),
   ],
   controllers: [SettingsController],
